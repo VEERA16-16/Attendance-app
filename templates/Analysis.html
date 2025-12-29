@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Reports</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #2d89ef;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+    .filters {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+    }
+    select, input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+    th {
+      background: #2d89ef;
+      color: white;
+    }
+    canvas {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Attendance Reports & Analysis</h1>
+</header>
+
+<div class="container">
+  <div class="filters">
+    <div>
+      <label for="filterDept">Department:</label><br>
+      <select id="filterDept">
+        <option value="All">All</option>
+        <option value="CSE">CSE</option>
+        <option value="AI&DS">AI&DS</option>
+        <option value="ECE">ECE</option>
+        <option value="EEE">EEE</option>
+        <option value="MECH">MECH</option>
+        <option value="CIVIL">CIVIL</option>
+        <option value="IT">IT</option>
+      </select>
+    </div>
+    <div>
+      <label for="filterYear">Year:</label><br>
+      <select id="filterYear">
+        <option value="All">All</option>
+        <option value="I">I</option>
+        <option value="II">II</option>
+        <option value="III">III</option>
+        <option value="IV">IV</option>
+      </select>
+    </div>
+    <div>
+      <button style="margin-top:18px;padding:8px 15px;background:#2d89ef;color:white;border:none;border-radius:6px;" onclick="applyFilter()">Apply Filter</button>
+    </div>
+  </div>
+
+  <h2>Student Attendance Percentage</h2>
+  <table id="reportTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Roll No</th>
+        <th>Year</th>
+        <th>Department</th>
+        <th>Total Classes</th>
+        <th>Attended</th>
+        <th>Percentage</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data will load here -->
+    </tbody>
+  </table>
+
+  <h2>Department-wise Attendance Chart</h2>
+  <canvas id="deptChart" width="400" height="200"></canvas>
+</div>
+
+<script>
+  const tableBody = document.querySelector("#reportTable tbody");
+
+  // Sample Attendance Data (Replace with DB later)
+  let attendanceSummary = [
+    {name:"Arun", roll:"CSE101", year:"III", dept:"CSE", total:20, present:18},
+    {name:"Priya", roll:"ECE202", year:"II", dept:"ECE", total:20, present:15},
+    {name:"Kumar", roll:"IT303", year:"IV", dept:"IT", total:20, present:19},
+    {name:"Sneha", roll:"CIV404", year:"I", dept:"CIVIL", total:20, present:12},
+    {name:"Ravi", roll:"EEE505", year:"II", dept:"EEE", total:20, present:16},
+    {name:"Meena", roll:"MECH606", year:"III", dept:"MECH", total:20, present:14}
+  ];
+
+  // Render Report Table
+  function renderTable(data) {
+    tableBody.innerHTML = "";
+    data.forEach(r => {
+      let percentage = ((r.present / r.total) * 100).toFixed(2);
+      tableBody.innerHTML += `
+        <tr>
+          <td>${r.name}</td>
+          <td>${r.roll}</td>
+          <td>${r.year}</td>
+          <td>${r.dept}</td>
+          <td>${r.total}</td>
+          <td>${r.present}</td>
+          <td>${percentage}%</td>
+        </tr>
+      `;
+    });
+  }
+
+  // Initial Render
+  renderTable(attendanceSummary);
+
+  // Filter Function
+  function applyFilter() {
+    const dept = document.getElementById("filterDept").value;
+    const year = document.getElementById("filterYear").value;
+
+    let filtered = attendanceSummary;
+    if(dept !== "All") {
+      filtered = filtered.filter(r => r.dept === dept);
+    }
+    if(year !== "All") {
+      filtered = filtered.filter(r => r.year === year);
+    }
+
+    renderTable(filtered);
+    updateChart(filtered);
+  }
+
+  // Department-wise Chart
+  function updateChart(data) {
+    let deptData = {};
+    data.forEach(r => {
+      if(!deptData[r.dept]) deptData[r.dept] = {present:0, total:0};
+      deptData[r.dept].present += r.present;
+      deptData[r.dept].total += r.total;
+    });
+
+    let labels = Object.keys(deptData);
+    let percentages = labels.map(d => ((deptData[d].present / deptData[d].total) * 100).toFixed(2));
+
+    if(window.deptChartInstance) {
+      window.deptChartInstance.destroy();
+    }
+
+    const ctx = document.getElementById("deptChart").getContext("2d");
+    window.deptChartInstance = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Attendance % by Department",
+          data: percentages,
+          backgroundColor: "#2d89ef"
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true, max: 100 }
+        }
+      }
+    });
+  }
+
+  // Initial Chart
+  updateChart(attendanceSummary);
+</script>
+
+</body>
+</html>

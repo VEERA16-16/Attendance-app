@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Attendance Reports</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Attendance App</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('admin') }}">Admin Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ url_for('report_page') }}">Reports</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2>Attendance Reports</h2>
+
+    <form method="get" class="row g-3 mb-3 align-items-center">
+      <div class="col-auto">
+        <label for="date" class="col-form-label">Select Date</label>
+      </div>
+      <div class="col-auto">
+        <input type="date" id="date" name="date" class="form-control" value="{{ selected_date }}" />
+      </div>
+      <div class="col-auto">
+        <label for="department" class="col-form-label">Department</label>
+      </div>
+      <div class="col-auto">
+        <select id="department" name="department" class="form-select">
+          <option value="" {% if not selected_dept %}selected{% endif %}>All Departments</option>
+          {% for dept in all_departments %}
+            <option value="{{ dept }}" {% if selected_dept == dept %}selected{% endif %}>{{ dept }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Filter Reports</button>
+      </div>
+    </form>
+
+    <div class="mb-3">
+      <a href="{{ url_for('export_attendance_csv', date=selected_date, department=selected_dept) }}" class="btn btn-outline-primary">Export All</a>
+      <a href="{{ url_for('export_attendance_csv', date=selected_date, department=selected_dept, status='present') }}" class="btn btn-outline-success">Export Present</a>
+      <a href="{{ url_for('export_attendance_csv', date=selected_date, department=selected_dept, status='absent') }}" class="btn btn-outline-danger">Export Absent</a>
+    </div>
+
+    <div class="row text-white mb-4">
+      <div class="col-md-4">
+        <div class="p-4 bg-secondary rounded text-center">
+          <h5>Total Students</h5>
+          <h2>{{ total_students }}</h2>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 bg-success rounded text-center">
+          <h5>Present</h5>
+          <h2>{{ total_present }}</h2>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 bg-danger rounded text-center">
+          <h5>Absent</h5>
+          <h2>{{ total_absent }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <h4>All Students in {{ selected_dept if selected_dept else "All Departments" }}</h4>
+    <table class="table table-bordered table-striped mb-4">
+      <thead>
+        <tr>
+          <th>Roll No</th>
+          <th>Name</th>
+          <th>Year</th>
+          <th>Department</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in all_students_list %}
+        <tr>
+          <td>{{ student['roll_no'] }}</td>
+          <td>{{ student['name'] }}</td>
+          <td>{{ student['year'] }}</td>
+          <td>{{ student['department'] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h4>Present Students</h4>
+    <table class="table table-bordered table-striped mb-4">
+      <thead>
+        <tr>
+          <th>Roll No</th>
+          <th>Name</th>
+          <th>Year</th>
+          <th>Department</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in present_students_list %}
+        <tr>
+          <td>{{ student['roll_no'] }}</td>
+          <td>{{ student['name'] }}</td>
+          <td>{{ student['year'] }}</td>
+          <td>{{ student['department'] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h4>Absent Students</h4>
+    <table class="table table-bordered table-striped mb-4">
+      <thead>
+        <tr>
+          <th>Roll No</th>
+          <th>Name</th>
+          <th>Year</th>
+          <th>Department</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in absent_students_list %}
+        <tr>
+          <td>{{ student['roll_no'] }}</td>
+          <td>{{ student['name'] }}</td>
+          <td>{{ student['year'] }}</td>
+          <td>{{ student['department'] }}</td>
+          <td>{{ student['reason'] or '-' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

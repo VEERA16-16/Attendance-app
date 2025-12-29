@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      display: flex;
+      background: #f4f6fb;
+    }
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background: #2d89ef;
+      color: white;
+      height: 100vh;
+      padding: 20px;
+      position: fixed;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      padding: 12px;
+      margin: 8px 0;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+    .sidebar a:hover {
+      background: #1e5db5;
+    }
+    /* Main Content */
+    .main {
+      margin-left: 240px;
+      padding: 20px;
+      width: 100%;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #2d89ef;
+      color: white;
+    }
+    .btn {
+      padding: 8px 15px;
+      background: #2d89ef;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .btn:hover { background: #1e5db5; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2><i class="fa fa-users"></i> Attendance</h2>
+    <a href="admin_dashboard.html"><i class="fa fa-home"></i> Admin Dashboard</a>
+    <a href="department_dashboard.html"><i class="fa fa-building"></i> Department</a>
+    <a href="report.html"><i class="fa fa-chart-bar"></i> Reports</a>
+    <a href="login.html"><i class="fa fa-sign-out"></i> Logout</a>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="card">
+      <h2>Dashboard Overview</h2>
+      <p>Welcome, Admin! Select options from the sidebar.</p>
+    </div>
+
+    <div class="card">
+      <h2>Department-wise Attendance</h2>
+      <canvas id="deptChart" height="100"></canvas>
+    </div>
+
+    <div class="card">
+      <h2>Student Attendance Table</h2>
+      <button class="btn" onclick="exportTableToExcel('attendanceTable')">Export Excel</button>
+      <button class="btn" onclick="window.print()">Export PDF</button>
+      <table id="attendanceTable">
+        <thead>
+          <tr>
+            <th>Name</th><th>Roll No</th><th>Year</th><th>Department</th><th>Total</th><th>Attended</th><th>%</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Arun</td><td>CSE101</td><td>III</td><td>CSE</td><td>20</td><td>18</td><td>90%</td></tr>
+          <tr><td>Priya</td><td>ECE202</td><td>II</td><td>ECE</td><td>20</td><td>15</td><td>75%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+<script>
+  // Chart Example
+  const ctx = document.getElementById("deptChart").getContext("2d");
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["CSE","ECE","IT","CIVIL","EEE","MECH"],
+      datasets: [{
+        label: "Attendance %",
+        data: [90, 75, 95, 60, 80, 70],
+        backgroundColor: "#2d89ef"
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true, max: 100 } }
+    }
+  });
+
+  // Export to Excel
+  function exportTableToExcel(tableID){
+    let table = document.getElementById(tableID);
+    let html = table.outerHTML;
+    let url = 'data:application/vnd.ms-excel,' + escape(html);
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "AttendanceReport.xls";
+    a.click();
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Students</title>
+</head>
+<body>
+    <h2>Manage Students</h2>
+
+    <form method="POST">
+        <label>Name:</label>
+        <input type="text" name="name" required><br><br>
+
+        <label>Roll No:</label>
+        <input type="text" name="roll_no" required><br><br>
+
+        <label>Year:</label>
+        <input type="number" name="year" min="1" max="4" required><br><br>
+
+        <label>Department:</label>
+        <select name="department" required>
+            <option value="CSE">CSE</option>
+            <option value="ECE">ECE</option>
+            <option value="EEE">EEE</option>
+            <option value="IT">IT</option>
+            <option value="AI&DS">AI&DS</option>
+            <option value="MECH">MECH</option>
+            <option value="CIVIL">CIVIL</option>
+        </select><br><br>
+
+        <button type="submit">Add Student</button>
+    </form>
+
+    <h3>Student List</h3>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Roll No</th>
+            <th>Year</th>
+            <th>Department</th>
+        </tr>
+        {% for student in students %}
+        <tr>
+            <td>{{ student['id'] }}</td>
+            <td>{{ student['name'] }}</td>
+            <td>{{ student['roll_no'] }}</td>
+            <td>{{ student['year'] }}</td>
+            <td>{{ student['department'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

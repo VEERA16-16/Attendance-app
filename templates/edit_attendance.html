@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Edit Attendance{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-3">Edit Attendance Record</h2>
+  <div class="card">
+    <div class="card-body">
+      <form method="post">
+        <div class="mb-3">
+          <label class="form-label">Student</label>
+          <input type="text" class="form-control" value="{{ rec['name'] }}" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Department</label>
+          <input type="text" class="form-control" value="{{ rec['department'] }}" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Date</label>
+          <input type="text" class="form-control" value="{{ rec['date'] }}" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Status</label>
+          <select class="form-select" name="status" required>
+            <option value="P" {% if rec['status']=='P' %}selected{% endif %}>Present</option>
+            <option value="A" {% if rec['status']=='A' %}selected{% endif %}>Absent</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Reason</label>
+          <textarea class="form-control" name="reason" rows="2">{{ rec['reason'] }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Attendance</button>
+        <a href="{{ url_for('admin') }}" class="btn btn-secondary">Cancel</a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

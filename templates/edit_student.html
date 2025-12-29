@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Student{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 600px;">
+  <h2>Edit Student</h2>
+  <form method="post">
+    <div class="mb-3">
+      <label class="form-label">Roll No</label>
+      <input type="text" name="roll_no" class="form-control" value="{{ student.roll_no }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Name</label>
+      <input type="text" name="name" class="form-control" value="{{ student.name }}" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Year</label>
+      <input type="number" name="year" class="form-control" value="{{ student.year }}" min="1" max="5" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Department</label>
+      <input type="text" class="form-control" value="{{ student.department }}" readonly>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Student</button>
+    <a href="{{ url_for('manage_students') }}" class="btn btn-secondary ms-2">Cancel</a>
+  </form>
+</div>
+{% endblock %}

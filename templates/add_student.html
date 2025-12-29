@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Add Student{% endblock %}
+{% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+    <div class="card shadow">
+        <div class="card-body">
+            <h2 class="card-title mb-3">Add New Student</h2>
+            <form method="post">
+                <div class="mb-3">
+                    <label class="form-label">Roll No</label>
+                    <input type="text" name="roll_no" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Year</label>
+                    <input type="number" name="year" class="form-control" min="1" max="5" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Department</label>
+                    <input type="text" class="form-control" value="{{ dept }}" readonly>
+                </div>
+                <button type="submit" class="btn btn-success">Add Student</button>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

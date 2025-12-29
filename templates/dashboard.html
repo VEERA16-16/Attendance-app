@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4 text-center">Welcome, {{ session.get('username', 'User') }}</h2>
+
+  <!-- Summary Cards -->
+  <div class="row mb-4">
+    <div class="col-md-4 mb-3">
+      <div class="card text-white bg-primary h-100">
+        <div class="card-body">
+          <h5 class="card-title">Total Students</h5>
+          <p class="card-text fs-3">{{ total_students }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card text-white bg-success h-100">
+        <div class="card-body">
+          <h5 class="card-title">Present Today</h5>
+          <p class="card-text fs-3">{{ total_present }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card text-white bg-danger h-100">
+        <div class="card-body">
+          <h5 class="card-title">Absent Today</h5>
+          <p class="card-text fs-3">{{ total_absent }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Placeholder for Charts or Reports -->
+  <div class="card">
+    <div class="card-header">
+      Attendance Overview (Placeholder)
+    </div>
+    <div class="card-body">
+      <p>This area can be used to display attendance charts or other analytics.</p>
+      <!-- Optional: integrate chart.js or other charting libraries here -->
+    </div>
+  </div>
+</div>
+{% endblock %}
